@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8">
+  <title>Gerador de Slide de Encerramento — EBD em Foco</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body { font-family: -apple-system, Segoe UI, Roboto, sans-serif; max-width: 640px; margin: 40px auto; padding: 0 16px; color: #222; }
+    h1 { font-size: 1.4rem; }
+    fieldset { border: 1px solid #ddd; border-radius: 8px; padding: 16px; margin-bottom: 16px; }
+    legend { font-weight: 600; padding: 0 6px; }
+    label { display: block; margin: 8px 0 4px; }
+    input[type=file] { display: block; margin-bottom: 12px; }
+    input[type=submit] { background: #b5541e; color: white; border: none; padding: 10px 20px; border-radius: 6px; font-size: 1rem; cursor: pointer; }
+    input[type=submit]:hover { background: #94430f; }
+    .flash { background: #fff3cd; border: 1px solid #ffe69c; padding: 10px 14px; border-radius: 6px; margin-bottom: 12px; }
+    .hint { color: #666; font-size: 0.9rem; }
+    .radio-row { display: flex; gap: 24px; }
+    #progress { display: none; margin-top: 16px; }
+  </style>
+</head>
+<body>
+  <h1>Gerador de Slide de Encerramento do Trimestre</h1>
+  <p class="hint">Envie as lições completas (.pptx) do trimestre — a ordem não importa, o número de cada lição é detectado automaticamente. O app extrai título, introdução e os bumpers dos tópicos I/II/III de cada uma e monta o slide final com a capa e o pacote promocional da turma escolhida.</p>
+
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      {% for m in messages %}
+        <div class="flash">{{ m }}</div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  <form method="post" action="{{ url_for('gerar') }}" enctype="multipart/form-data" id="form">
+    <fieldset>
+      <legend>Turma</legend>
+      <div class="radio-row">
+        <label><input type="radio" name="turma" value="adultos" checked> Adultos</label>
+        <label><input type="radio" name="turma" value="jovens"> Jovens</label>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Lições completas (.pptx)</legend>
+      <input type="file" name="licoes" accept=".pptx" multiple required>
+      <p class="hint">Selecione as 13 lições do trimestre de uma vez (Ctrl/Cmd clique para selecionar várias).</p>
+    </fieldset>
+
+    <input type="submit" value="Gerar slide de encerramento">
+    <div id="progress">Gerando… isso pode levar um minuto (arquivos grandes).</div>
+  </form>
+
+  <script>
+    document.getElementById('form').addEventListener('submit', function () {
+      document.getElementById('progress').style.display = 'block';
+    });
+  </script>
+</body>
+</html>
